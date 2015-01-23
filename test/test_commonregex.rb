@@ -1,6 +1,6 @@
 require 'minitest/autorun'
 
-require '../lib/commonregex'
+require_relative '../lib/commonregex'
 
 class TestCommonRegex < Minitest::Test
 	def setup
