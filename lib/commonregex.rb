@@ -40,6 +40,7 @@ class CommonRegex
 	@@credit_card_regex = /((?:(?:\d{4}[- ]){3}\d{4}|\d{16}))(?![\d])/m
 	@@address_regex = /(\d{1,4} [\w\s]{1,20}(?:(street|avenue|road|highway|square|traill|drive|court|parkway|boulevard)\b|(st|ave|rd|hwy|sq|trl|dr|ct|pkwy|blvd)\.(?=\b)?))/im
 
+	
 	def initialize(text = '')
 		@text = text;
 	end
