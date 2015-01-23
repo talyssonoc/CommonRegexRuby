@@ -37,7 +37,7 @@ Examples
     "you can reach my associate at (012)-345-6789 or associative@mail.com.\n"
     "I\'ll be on UK during the whole week on a J.R.R. Tolkien convention."
     
-    common_regex = CommonRegex.new(text);
+    common_regex = CommonRegex.new(text)
     put common_regex.get_dates
     // ["Jan 9th 2012"]
     puts common_regex.get_times
@@ -57,7 +57,7 @@ Alternatively, you can generate a single CommonRegex instance and use it to pars
 
 ```ruby
 
-    common_regex = CommonRegex.new();
+    common_regex = CommonRegex.new()
     puts common_regex.get_times 'When are you free? Do you want to meet up for coffee at 4:00?'
     // ["4:00"]
     puts common_regex.get_money 'They said the price was US$5,000.90, actually it is US$3,900.5. It\'s $1100.4 less, can you imagine this?'
