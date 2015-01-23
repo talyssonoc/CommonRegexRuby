@@ -9,6 +9,17 @@ Pull requests welcome!
 
 Please note that this is currently English/US specific.
 
+Installation
+============
+
+To install CommonRegexRuby, just run:
+
+```sh
+    $ gem install commonregex
+```
+
+Now you're able to use the `CommonRegex` class, check the API and the examples.
+
 API
 ===
 
