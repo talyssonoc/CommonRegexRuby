@@ -23,7 +23,10 @@ Now you're able to use the `CommonRegex` class, check the API and the examples.
 API
 ===
 
-Possible properties and its equivalent methods:
+Instance methods will return the results relative to the text passed at the constructor.
+Class methods will receive a text as parameter and return the results relative to it.
+
+Possible instance and class methods:
 
 * `get_dates([text])`
 * `get_times([text])`
@@ -64,18 +67,17 @@ Examples
 
 ```
 
-Alternatively, you can generate a single CommonRegex instance and use it to parse multiple segments of text.
+Alternatively, you can use class methods.
 
 ```ruby
 
-    common_regex = CommonRegex.new()
-    puts common_regex.get_times 'When are you free? Do you want to meet up for coffee at 4:00?'
+    puts CommonRegex.get_times 'When are you free? Do you want to meet up for coffee at 4:00?'
     // ["4:00"]
-    puts common_regex.get_money 'They said the price was US$5,000.90, actually it is US$3,900.5. It\'s $1100.4 less, can you imagine this?'
+    puts CommonRegex.get_money 'They said the price was US$5,000.90, actually it is US$3,900.5. It\'s $1100.4 less, can you imagine this?'
     // ["US$5,000.90", "US$3,900.5", "$1100.4"]
-    puts common_regex.get_percentages 'I\'m 99.9999999% sure that I\'ll get a raise of 5%.'
+    puts CommonRegex.get_percentages 'I\'m 99.9999999% sure that I\'ll get a raise of 5%.'
     // ["99.9999999%", "5%"]
-    puts common_regex.get_ipv6 'The IPv6 address for localhost is 0:0:0:0:0:0:0:1, or alternatively, ::1.'
+    puts CommonRegex.get_ipv6 'The IPv6 address for localhost is 0:0:0:0:0:0:0:1, or alternatively, ::1.'
     // ["0:0:0:0:0:0:0:1", "::1"]
 
 ```
