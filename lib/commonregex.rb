@@ -65,3 +65,4 @@ class CommonRegex
 
 end
 
+require "commonregex/version"
