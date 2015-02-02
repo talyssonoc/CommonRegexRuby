@@ -1,6 +1,9 @@
 CommonRegexRuby
 =============
 
+[![Gem Version](https://badge.fury.io/rb/commonregex.svg)](http://badge.fury.io/rb/commonregex) 
+[![Build Status](https://travis-ci.org/talyssonoc/CommonRegexRuby.svg?branch=master)](https://travis-ci.org/talyssonoc/CommonRegexRuby)
+
 [CommonRegex](https://github.com/madisonmay/CommonRegex/ "CommonRegex") port for Ruby
 
 Find a lot of kinds of common information in a string.
