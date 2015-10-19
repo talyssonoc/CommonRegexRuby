@@ -1,16 +1,26 @@
+require 'yaml'
+require 'commonregex/version'
+
 class CommonRegex
+  METHODS = YAML.load_file(File.join(File.dirname(__FILE__),  'support', 'most_commom.yaml')) || {}
 
-  # Methods used to generate @date_regex
-  def self.opt(regex)
-    '(?:' + regex + ')?'
+  def initialize(text = '')
+    @text = text;
   end
+  
+  class << self
+    # Methods used to generate @date_regex
+    def opt(regex)
+      '(?:' + regex + ')?'
+    end
 
-  def self.group(regex)
-    '(?:' + regex + ')'
-  end
+    def group(regex)
+      '(?:' + regex + ')'
+    end
 
-  def self.any(regexes)
-    regexes.join('|')
+    def any(regexes)
+      regexes.join('|')
+    end
   end
 
   # Generate @date_regex
@@ -40,8 +50,7 @@ class CommonRegex
   @@phones_regex = /(\d?[^\s\w]*(?:\(?\d{3}\)?\W*)?\d{3}\W*\d{4})/im
   @@times_regex = /\b((0?[0-9]|1[0-2])(:[0-5][0-9])?(am|pm)|([01]?[0-9]|2[0-3]):[0-5][0-9])/im
 
-  %w{acronyms addresses credit_cards dates emails hex_colors ipv4 ipv6 links
-    money percentages phones times}.each do |regex|
+  METHODS.each do |regex|
     class_eval <<-RUBY.gsub(/^\s{6}/, ''), __FILE__, __LINE__
       def self.get_#{regex}(text)
         get_matches(text, @@#{regex}_regex)
@@ -53,16 +62,8 @@ class CommonRegex
     RUBY
   end
 
-  def initialize(text = '')
-    @text = text;
-  end
-
   private
-
-  def self.get_matches(text, regex)
-    text.scan(regex).collect{|x| x[0]}
-  end
-
+    def self.get_matches(text, regex)
+      text.scan(regex).collect{|x| x[0]}
+    end
 end
-
-require "commonregex/version"
