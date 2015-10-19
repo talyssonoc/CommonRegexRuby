@@ -50,16 +50,14 @@ class CommonRegex
   @@phones_regex = /(\d?[^\s\w]*(?:\(?\d{3}\)?\W*)?\d{3}\W*\d{4})/im
   @@times_regex = /\b((0?[0-9]|1[0-2])(:[0-5][0-9])?(am|pm)|([01]?[0-9]|2[0-3]):[0-5][0-9])/im
 
-  METHODS.each do |regex|
-    class_eval <<-RUBY.gsub(/^\s{6}/, ''), __FILE__, __LINE__
-      def self.get_#{regex}(text)
-        get_matches(text, @@#{regex}_regex)
-      end
+  METHODS.each do |regex_name|
+    define_method "get_#{regex_name}" do
+      self.class.send "get_#{regex_name}", @text
+    end
 
-      def get_#{regex}
-        self.class.get_#{regex}(@text)
-      end
-    RUBY
+    define_singleton_method "get_#{regex_name}" do |text|
+      get_matches text, instance_eval("@@#{regex_name}_regex")
+    end
   end
 
   private
