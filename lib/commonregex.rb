@@ -1,16 +1,25 @@
+require 'yaml'
+require 'commonregex/version'
+
 class CommonRegex
+  METHODS = YAML.load_file(File.join(File.dirname(__FILE__),  'support', 'most_common.yml')) || {}
 
-  # Methods used to generate @date_regex
-  def self.opt(regex)
-    '(?:' + regex + ')?'
+  def initialize(text = '')
+    @text = text
   end
+  
+  class << self
+    def opt(regex)
+      "(?:#{regex})?"
+    end
 
-  def self.group(regex)
-    '(?:' + regex + ')'
-  end
+    def group(regex)
+      "(?:#{regex})"
+    end
 
-  def self.any(regexes)
-    regexes.join('|')
+    def any(regexes)
+      regexes.join('|')
+    end
   end
 
   # Generate @date_regex
@@ -18,14 +27,15 @@ class CommonRegex
   day_regex = '[0-3]?\\d(?:st|nd|rd|th)?'
   year_regex = '\\d{4}'
 
-  @@dates_regex = Regexp.new('(' + CommonRegex.group(
-    CommonRegex.any(
-      [
-        day_regex + '\\s+(?:of\\s+)?' + month_regex,
-        month_regex + '\\s+' + day_regex
-      ]
-    )
-  ) + '(?:\\,)?\\s*' + CommonRegex.opt(year_regex) + '|[0-3]?\\d[-/][0-3]?\\d[-/]\\d{2,4})', Regexp::IGNORECASE || Regexp::MULTILINE)
+  day_or_month = CommonRegex.any([
+    day_regex + '\\s+(?:of\\s+)?' + month_regex,
+    month_regex + '\\s+' + day_regex
+  ])
+
+  @@dates_regex = Regexp.new(
+    ("(#{ CommonRegex.group(day_or_month) }" +  "(?:\\,)?\\s*#{ CommonRegex.opt(year_regex) }|[0-3]?\\d[-/][0-3]?\\d[-/]\\d{2,4})"),
+    Regexp::IGNORECASE || Regexp::MULTILINE
+  )
 
   @@acronyms_regex = /\b(([A-Z]\.)+|([A-Z]){2,})/m
   @@addresses_regex = /(\d{1,4} [\w\s]{1,20}(?:(street|avenue|road|highway|square|traill|drive|court|parkway|boulevard)\b|(st|ave|rd|hwy|sq|trl|dr|ct|pkwy|blvd)\.(?=\b)?))/im
@@ -40,29 +50,18 @@ class CommonRegex
   @@phones_regex = /(\d?[^\s\w]*(?:\(?\d{3}\)?\W*)?\d{3}\W*\d{4})/im
   @@times_regex = /\b((0?[0-9]|1[0-2])(:[0-5][0-9])?(am|pm)|([01]?[0-9]|2[0-3]):[0-5][0-9])/im
 
-  %w{acronyms addresses credit_cards dates emails hex_colors ipv4 ipv6 links
-    money percentages phones times}.each do |regex|
-    class_eval <<-RUBY.gsub(/^\s{6}/, ''), __FILE__, __LINE__
-      def self.get_#{regex}(text)
-        get_matches(text, @@#{regex}_regex)
-      end
+  METHODS.each do |regex_name|
+    define_method "get_#{regex_name}" do
+      self.class.send "get_#{regex_name}", @text
+    end
 
-      def get_#{regex}
-        self.class.get_#{regex}(@text)
-      end
-    RUBY
-  end
-
-  def initialize(text = '')
-    @text = text;
+    define_singleton_method "get_#{regex_name}" do |text|
+      get_matches text, instance_eval("@@#{regex_name}_regex")
+    end
   end
 
   private
-
-  def self.get_matches(text, regex)
-    text.scan(regex).collect{|x| x[0]}
-  end
-
+    def self.get_matches(text, regex)
+      text.scan(regex).collect{|x| x[0]}
+    end
 end
-
-require "commonregex/version"
