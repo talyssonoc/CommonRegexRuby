@@ -2,7 +2,7 @@ require 'yaml'
 require 'commonregex/version'
 
 class CommonRegex
-  METHODS = YAML.load_file(File.join(File.dirname(__FILE__),  'support', 'most_commom.yaml')) || {}
+  METHODS = YAML.load_file(File.join(File.dirname(__FILE__),  'support', 'most_common.yml')) || {}
 
   def initialize(text = '')
     @text = text;
