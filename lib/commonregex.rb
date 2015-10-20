@@ -5,17 +5,16 @@ class CommonRegex
   METHODS = YAML.load_file(File.join(File.dirname(__FILE__),  'support', 'most_common.yml')) || {}
 
   def initialize(text = '')
-    @text = text;
+    @text = text
   end
   
   class << self
-    # Methods used to generate @date_regex
     def opt(regex)
-      '(?:' + regex + ')?'
+      "(?:#{regex})?"
     end
 
     def group(regex)
-      '(?:' + regex + ')'
+      "(?:#{regex})"
     end
 
     def any(regexes)
@@ -28,14 +27,15 @@ class CommonRegex
   day_regex = '[0-3]?\\d(?:st|nd|rd|th)?'
   year_regex = '\\d{4}'
 
-  @@dates_regex = Regexp.new('(' + CommonRegex.group(
-    CommonRegex.any(
-      [
-        day_regex + '\\s+(?:of\\s+)?' + month_regex,
-        month_regex + '\\s+' + day_regex
-      ]
-    )
-  ) + '(?:\\,)?\\s*' + CommonRegex.opt(year_regex) + '|[0-3]?\\d[-/][0-3]?\\d[-/]\\d{2,4})', Regexp::IGNORECASE || Regexp::MULTILINE)
+  day_or_month = CommonRegex.any([
+    day_regex + '\\s+(?:of\\s+)?' + month_regex,
+    month_regex + '\\s+' + day_regex
+  ])
+
+  @@dates_regex = Regexp.new(
+    ("(#{ CommonRegex.group(day_or_month) }" +  "(?:\\,)?\\s*#{ CommonRegex.opt(year_regex) }|[0-3]?\\d[-/][0-3]?\\d[-/]\\d{2,4})"),
+    Regexp::IGNORECASE || Regexp::MULTILINE
+  )
 
   @@acronyms_regex = /\b(([A-Z]\.)+|([A-Z]){2,})/m
   @@addresses_regex = /(\d{1,4} [\w\s]{1,20}(?:(street|avenue|road|highway|square|traill|drive|court|parkway|boulevard)\b|(st|ave|rd|hwy|sq|trl|dr|ct|pkwy|blvd)\.(?=\b)?))/im
