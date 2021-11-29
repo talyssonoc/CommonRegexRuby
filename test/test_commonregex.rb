@@ -10,6 +10,7 @@ class TestCommonRegex < Minitest::Test
     @text = "John, please get that article on www.linkedin.com to me by 5:00PM\n"\
       "on Jan 9th 2012. 4:00 would be ideal, actually. If you have any questions,\n"\
       "you can reach my associate at (012)-345-6789 or associative@mail.com.\n"\
+      "more links [HtTp://github.com/learnbyexample](FtpS://github.com//learnbyexample)'\n"\
       "I\'ll be on UK during the whole week on a J.R.R. Tolkien convention, starting friday at 4PM."
 
     @common_regex = CommonRegex.new(@text)
@@ -28,7 +29,7 @@ class TestCommonRegex < Minitest::Test
   end
 
   def test_links
-    assert_equal @common_regex.get_links, ['www.linkedin.com']
+    assert_equal @common_regex.get_links, ['www.linkedin.com', 'HtTp://github.com/learnbyexample', 'FtpS://github.com//learnbyexample']
   end
 
   def test_emails
